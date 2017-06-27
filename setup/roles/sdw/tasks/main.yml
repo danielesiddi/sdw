@@ -1,0 +1,36 @@
+---
+
+- name: ensure key exists at DigitalOcean
+  digital_ocean: >
+    state=present
+    command=ssh
+    name="{{ do_keyname }}"
+    ssh_pub_key={{ lookup('file', '~/.ssh/id_rsa.pub') }}
+    api_token={{ do_token }}
+  register: my_ssh_key
+
+
+- name: generate a new VM in DigitalOcean
+  digital_ocean:
+    api_token={{ do_token }}
+    image_id=ubuntu-17-04-x64
+    name={{ vmname }}
+    region_id=LON1
+    state={{ machine_state|default('active') }}
+    unique_name=yes
+    size_id=512mb
+    ssh_key_ids={{ my_ssh_key.ssh_key.id }}
+    wait=yes
+  register: droplet_info
+
+- debug: msg="IP is {{ droplet_info.droplet.ip_address }}"
+  when: droplet_info.droplet.ip_address is defined
+
+- name: add droplet IP to the memory inventory named "included_droplet"
+  add_host:
+    name: "{{ droplet_info.droplet.ip_address }}"
+    groups: included_droplet
+
+- name: sleep to let the droplet become completely ready for SSH
+  command: sleep 10
+

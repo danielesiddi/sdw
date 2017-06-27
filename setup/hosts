@@ -1,0 +1,13 @@
+[digitalocean]
+localhost ansible_connection=local
+
+
+# empty group, with common properties to all droplets
+[included_droplet]
+
+[included_droplet:vars]
+ansible_ssh_user=root
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+host_key_checking = False
+#in ubuntu 17.04 DO image there is no /usr/bin/python, default in ansible
+ansible_python_interpreter = /usr/bin/python3

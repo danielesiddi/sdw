@@ -1,0 +1,18 @@
+---
+
+- name: Install packages
+  hosts: included_droplet
+
+  tasks:
+    - apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+    - apt_repository: repo="deb https://download.docker.com/linux/ubuntu zesty edge" #latest docker version (17.03 required)
+    - apt: update_cache=yes
+    - apt: name=docker-ce
+    - apt: name=aptitude
+    - apt: name=apt-transport-https
+    - apt: name=ca-certificates
+    - apt: name=curl
+    - apt: name=software-properties-common
+    - apt: name=python-pip
+    - command: pip install docker-compose #laest docker-compose version (1.11 required)
+

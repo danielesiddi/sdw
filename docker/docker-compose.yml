@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+   phpi:
+     build:
+       dockerfile: Dockerfile_phpi
+       context: .
+     volumes:
+       - ./src:/usr/share/nginx/html
+     restart: always
+
+   ngino:
+     build:
+       dockerfile: Dockerfile_ngino
+       context: .
+       args:
+         fastcgiconturi: phpi:9000
+     depends_on:
+       - phpi
+     volumes_from:
+       - phpi
+     ports:
+       - "8000:80"
+     restart: always
+

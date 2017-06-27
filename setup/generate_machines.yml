@@ -1,0 +1,17 @@
+---
+# provision needed droplet
+
+- name: Generate VMachine
+  gather_facts: true
+  hosts: digitalocean
+
+  #vars:
+  #  do_token: you can write here your token and remove it from command line
+
+  roles:
+    - sdw #this role generates the droplet, and adds its IP to the local memory inventory
+
+- include: install_debs.yml #installs the required deb packages
+- include: deploy_app.yml #deploys dockerized app
+
+

@@ -1,0 +1,22 @@
+---
+
+- name: Install required packages on droplet(s)
+  hosts: included_droplet
+
+  tasks:
+    - name: ensure docker is running
+      service: name=docker state=started enabled=yes
+    - name: create user "app"
+      user: name=app generate_ssh_key=yes state=present
+    - name: copy software
+      copy: src=../docker dest=/home/app owner=app group=app
+    - name: run development docker-compose
+      command: docker-compose up -d
+      args:
+        chdir: /home/app/docker
+      when: environment != 'pro'
+    - name: run production docker-compose
+      command: docker-compose -f docker-compose_prod.yml up -d
+      args:
+        chdir: /home/app/docker
+      when: environment == 'pro'
