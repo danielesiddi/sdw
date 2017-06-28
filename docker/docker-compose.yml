@@ -5,8 +5,6 @@ services:
      build:
        dockerfile: Dockerfile_phpi
        context: .
-     volumes:
-       - ./src:/usr/share/nginx/html
      restart: always
 
    ngino:
@@ -17,9 +15,9 @@ services:
          fastcgiconturi: phpi:9000
      depends_on:
        - phpi
-     volumes_from:
-       - phpi
      ports:
        - "8000:80"
      restart: always
 
+volumes:
+   ./src:/usr/share/nginx/html

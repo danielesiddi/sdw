@@ -24,13 +24,15 @@
   register: droplet_info
 
 - debug: msg="IP is {{ droplet_info.droplet.ip_address }}"
-  when: droplet_info.droplet.ip_address is defined
+  when: droplet_info.droplet is defined
 
 - name: add droplet IP to the memory inventory named "included_droplet"
   add_host:
     name: "{{ droplet_info.droplet.ip_address }}"
     groups: included_droplet
+  when: droplet_info.droplet is defined
 
 - name: sleep to let the droplet become completely ready for SSH
   command: sleep 10
+  when: droplet_info.droplet is defined
 
